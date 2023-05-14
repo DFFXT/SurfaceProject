@@ -1,9 +1,14 @@
 package com.example.surfaceproject
 
+import android.graphics.Color
 import android.graphics.SurfaceTexture
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.Surface
+import android.view.SurfaceControl
 import android.view.SurfaceHolder
 import android.view.TextureView
 import android.widget.EditText
@@ -30,6 +35,7 @@ fun FloatArray.toBuffer(): FloatBuffer {
 class MainActivity : AppCompatActivity() {
     private val bitmapTexture = BitmapTexture(0 , R.mipmap.icon_local.toBitmap())
     private val bitmapTextureBg = BitmapTexture(1, R.mipmap.icon_bg.toBitmap())
+    private val bitmapTextureOut = BitmapTexture(2, null)
     private val rect = RectModel(
         floatArrayOf(
             -1f, 1f, 0f,
@@ -50,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rect.texture = bitmapTexture
-        rect1.texture = bitmapTextureBg
+        rect1.texture = bitmapTextureOut
         setContentView(R.layout.activity_main)
         // val glSurfaceView: GLSurfaceView = findViewById(0)
 
@@ -71,10 +77,7 @@ class MainActivity : AppCompatActivity() {
                 height: Int,
             ) {
                 // surface.attachToGLContext(tid[0])
-                /* val surface = Surface(surface)
-                 val c = surface.lockHardwareCanvas()
-                 c.drawColor(Color.RED)
-                 surface.unlockCanvasAndPost(c)*/
+
             }
 
             override fun onSurfaceTextureSizeChanged(
@@ -89,8 +92,10 @@ class MainActivity : AppCompatActivity() {
             override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
             }
         }
+
         glSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
+
             }
 
             override fun surfaceChanged(
@@ -104,18 +109,33 @@ class MainActivity : AppCompatActivity() {
             override fun surfaceDestroyed(holder: SurfaceHolder) {
             }
         })
+        val surfaceTexture = SurfaceTexture(false)
         glSurfaceView.setRenderer(object : GLSurfaceView.Renderer {
             override fun onSurfaceCreated(
                 gl: GL10,
                 config: javax.microedition.khronos.egl.EGLConfig?,
             ) {
                 // textures[0] = loadTexture(gl, R.mipmap.icon_default_head)
-                Texture.init(gl, 2)
+                Texture.init(gl, 3)
                 bitmapTexture.load(gl)
                 bitmapTextureBg.load(gl)
+                bitmapTextureOut.load(gl)
 
 
                 gl.glClearColor(0f, 0f, 0f, 0f)
+                val looper = Looper.myLooper()
+
+                surfaceTexture.attachToGLContext(Texture.tid[2])
+                surfaceTexture.setOnFrameAvailableListener {
+                    glSurfaceView.requestRender()
+                }
+
+                val surface = Surface(surfaceTexture)
+                val c = surface.lockHardwareCanvas()
+                c.drawColor(Color.RED)
+                surface.unlockCanvasAndPost(c)
+
+
             }
 
             override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -152,6 +172,7 @@ class MainActivity : AppCompatActivity() {
                 // 允许设置纹理坐标数据
                 gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY)
 
+                surfaceTexture.updateTexImage()
 
                 rect.draw(gl)
                 gl.glEnable(GL10.GL_BLEND)
@@ -167,6 +188,7 @@ class MainActivity : AppCompatActivity() {
                 //gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA)
                 rect1.draw(gl)
                 gl.glDisable(GL10.GL_BLEND)
+
                 // 设置三角形组坐标
                 /*gl.glVertexPointer(3, GL10.GL_FLOAT, 0, rect.vertexBuffer)
                 // 设置三角形法向
@@ -178,5 +200,6 @@ class MainActivity : AppCompatActivity() {
                 gl.glFlush()
             }
         })
+        glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
     }
 }
