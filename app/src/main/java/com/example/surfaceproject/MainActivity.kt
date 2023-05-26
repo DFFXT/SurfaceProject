@@ -1,5 +1,6 @@
 package com.example.surfaceproject
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.SurfaceTexture
 import android.opengl.GLES20
@@ -201,5 +202,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
         glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

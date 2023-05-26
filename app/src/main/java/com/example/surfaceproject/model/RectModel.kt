@@ -4,7 +4,7 @@ import com.example.surfaceproject.texture.BitmapTexture
 import com.example.surfaceproject.toBuffer
 import javax.microedition.khronos.opengles.GL10
 
-private val fx = floatArrayOf(
+val fx = floatArrayOf(
     0f, 0f, 1f,
     0f, 0f, 1f,
     0f, 0f, 1f,

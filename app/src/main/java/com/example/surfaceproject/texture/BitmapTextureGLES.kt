@@ -3,32 +3,20 @@ package com.example.surfaceproject.texture
 import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.opengl.GLUtils
-import com.example.surfaceproject.toBuffer
 import javax.microedition.khronos.opengles.GL10
 
-val textureSqure = floatArrayOf(
-    0f,
-    1f,
-    1f,
-    1f,
-    0f,
-    0f,
-    1f,
-    0f,
-).toBuffer()
-
-class BitmapTexture(private val index: Int, private var bitmap: Bitmap?) : Texture() {
+class BitmapTextureGLES(private val index: Int, private var bitmap: Bitmap?) : TextureGLES() {
     val id: Int get() = tid[index]
-    fun load(gl: GL10): Int {
+    fun load(): Int {
         // gl.glActiveTexture(GL10.GL_TEXTURE0 + index)
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, id)
+        GLES20.glBindTexture(GL10.GL_TEXTURE_2D, id)
         // 设置采用方式, 每个纹理都必须设置
-        gl.glTexParameterx(
+        GLES20.glTexParameteri(
             GLES20.GL_TEXTURE_2D,
             GLES20.GL_TEXTURE_MIN_FILTER,
             GLES20.GL_LINEAR,
         )
-        gl.glTexParameterx(
+        GLES20.glTexParameteri(
             GLES20.GL_TEXTURE_2D,
             GLES20.GL_TEXTURE_MAG_FILTER,
             GLES20.GL_LINEAR,
@@ -46,8 +34,10 @@ class BitmapTexture(private val index: Int, private var bitmap: Bitmap?) : Textu
         gl.glActiveTexture(id)
     }
 
-    fun draw(gl: GL10) {
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, id)
-        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureSqure)
+    fun draw() {
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, id)
+        // gl.glBindTexture(GL10.GL_TEXTURE_2D, id)
+        GLES20.glVertexAttribPointer(GLES20.GL_TEXTURE_2D, 0, 0, false, 0, textureSqure)
+        // GLES20.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureSqure)
     }
 }
