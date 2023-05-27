@@ -1,19 +1,27 @@
 package com.example.surfaceproject
 
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.ImageFormat
+import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
+import android.media.ImageReader
 import android.opengl.GLES20
+import android.opengl.Matrix
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.view.TextureView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.surfaceproject.glsl.Loader
-import com.example.surfaceproject.model.RectModel
 import com.example.surfaceproject.model.RectModelGLES
-import com.example.surfaceproject.model.Triangle
-import com.example.surfaceproject.texture.BitmapTextureGLES
+import com.example.surfaceproject.texture.BitmapTextureGLE
 import com.example.surfaceproject.texture.TextureGLES
-import javax.microedition.khronos.opengles.GL10
+import com.example.surfaceproject.texture.textureSqure
+import toBitmap
 
 class MediaProjectionActivity : AppCompatActivity() {
     private val capture = ScreenCapture(this)
@@ -22,61 +30,68 @@ class MediaProjectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media_projection)
         val surfaceView = findViewById<SurfaceView>(R.id.surfaceView)
+        val textureView = findViewById<TextureView>(R.id.textureView)
+
+
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
 
-                // capture.startCapture(holder.surface, 200, 200)
+
+
+
                 glEnvironment = OpenGLEnvironment()
                 glEnvironment.createEnvironment(holder.surface) {
-                    GLES20.glViewport(0 ,0, 200, 200)
+                    TextureGLES.init(2)
+                    GLES20.glViewport(0, 0, 200, 200)
                     GLES20.glClearColor(1f, 0f, 0f, 1f)
-                    TextureGLES.init(1)
-                    val surfaceTexture = SurfaceTexture(TextureGLES.tid[0], false)
+                    val surfaceTexture = SurfaceTexture(TextureGLES.tid[1], false)
+                    surfaceTexture.setDefaultBufferSize(200, 200)
                     val txtSurface = Surface(surfaceTexture)
 
-                    capture.startCapture(txtSurface, 200, 200)
-                    surfaceTexture.setOnFrameAvailableListener {
-                        it.updateTexImage()
-                    }
-                    val txture = BitmapTextureGLES(0, null)
+
+
+
+
                     val loader = Loader()
+                    val txture = BitmapTextureGLE(1, null, loader = loader)
+                    txture.load()
                     loader.load(R.raw.vertext, R.raw.fragment)
-                    val rect = RectModelGLES(
-                        floatArrayOf(
-                            -1f, 1f, 0f,
-                            1f, 1f, 0f,
-                            -1f, -1f, 0f,
-                            1f, -1f, 0f,
-                        ),
-                        loader
+                    val v = floatArrayOf(
+                        0f, 1f, 0f,
+                        1f, 1f, 0f,
+                        0f, 0f, 0f,
+                        1f, 0f, 0f,
                     )
-                    //val rect = Triangle(loader)
-                    // rect.texture = txture
-                    it.draw {
-                        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-                        GLES20.glEnable(GLES20.GL_TEXTURE_2D)
-                        // 设置为坐标系模式
-                        // GLES20.glMatrixMode(GL10.GL_PROJECTION)
-                        // 重置为单位矩阵，如果不重置的话，旋转平移等操作会影响后续操作
-                        //GLES20.glLoadIdentity()
-                        // 旋转
-                        //gl.glRotatef(180f, 1f, 0f, 0f)
-
-                        // 运行设置顶点数据
-
-                        //gl.glEnableClientState(GL10.GL_VERTEX_ARRAY)
-                        // 允许设置法向数据
-                        //gl.glEnableClientState(GL10.GL_NORMAL_ARRAY)
-                        // 允许设置纹理坐标数据
-                        // gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY)
-
-                        rect.draw()
+                    //Matrix.translateM(v, 0, 0.5f, 0.5f, 0f)
+                    val rect = RectModelGLES(
+                        v,
+                        loader,
+                    )
+                    rect.texture = txture
+                    fun d() {
+                        it.draw {
+                            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+                            GLES20.glEnable(GLES20.GL_TEXTURE_2D)
+                            rect.draw()
+                        }
                     }
-                }
+                    surfaceTexture.setOnFrameAvailableListener({
+                        it.updateTexImage()
+                        d()
+                    }, Handler(Looper.myLooper()!!))
+                    capture.startCapture(txtSurface, 200, 200)
 
+
+
+                }
             }
 
-            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+            override fun surfaceChanged(
+                holder: SurfaceHolder,
+                format: Int,
+                width: Int,
+                height: Int,
+            ) {
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {

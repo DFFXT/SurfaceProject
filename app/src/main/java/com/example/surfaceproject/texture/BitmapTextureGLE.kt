@@ -3,9 +3,10 @@ package com.example.surfaceproject.texture
 import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.opengl.GLUtils
+import com.example.surfaceproject.glsl.Loader
 import javax.microedition.khronos.opengles.GL10
 
-class BitmapTextureGLES(private val index: Int, private var bitmap: Bitmap?) : TextureGLES() {
+class BitmapTextureGLE(private val index: Int, private var bitmap: Bitmap?, private val  loader: Loader) : TextureGLES() {
     val id: Int get() = tid[index]
     fun load(): Int {
         // gl.glActiveTexture(GL10.GL_TEXTURE0 + index)
@@ -35,9 +36,15 @@ class BitmapTextureGLES(private val index: Int, private var bitmap: Bitmap?) : T
     }
 
     fun draw() {
+
+        val location = GLES20.glGetAttribLocation(loader.program, "a_textureCoordinate")
+        GLES20.glEnableVertexAttribArray(location)
+        GLES20.glVertexAttribPointer(location, 2, GLES20.GL_FLOAT, false, 0, textureSqure)
+
+        val textureLoc = GLES20.glGetUniformLocation(loader.program, "u_texture")
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, id)
-        // gl.glBindTexture(GL10.GL_TEXTURE_2D, id)
-        GLES20.glVertexAttribPointer(GLES20.GL_TEXTURE_2D, 0, 0, false, 0, textureSqure)
+        GLES20.glUniform1i(textureLoc,  0)
+
         // GLES20.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureSqure)
     }
 }
