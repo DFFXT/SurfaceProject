@@ -1,5 +1,6 @@
-package com.example.surfaceproject
+package com.mx.screenshot
 
+import android.content.Context
 import android.content.Intent
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
@@ -9,27 +10,30 @@ import android.view.Surface
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.skin.skincore.SkinManager
 
-class ScreenCapture(private val activity: ComponentActivity) {
-    private lateinit var launcher: ActivityResultLauncher<Intent>
+class ScreenRecord(private val activity: ComponentActivity) {
+    private var launcher: ActivityResultLauncher<Intent>
     private lateinit var mediaProjection: MediaProjection
     private lateinit var surface: Surface
     private var width: Int = 0
     private var height: Int = 0
 
+    private val manager by lazy {
+        activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+    }
+
     init {
         launcher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val manager = activity.getSystemService(MediaProjectionManager::class.java)
             mediaProjection = manager.getMediaProjection(it.resultCode, it.data!!)
             start(width, height)
         }
     }
 
-    fun startCapture(surface: Surface, width: Int = activity.resources.displayMetrics.widthPixels, height: Int = activity.resources.displayMetrics.heightPixels) {
+    fun startCapture(surface: Surface, width: Int, height: Int) {
         this.width = width
         this.height = height
         this.surface = surface
-        val manager = activity.getSystemService(MediaProjectionManager::class.java)
         launcher.launch(manager.createScreenCaptureIntent())
     }
 

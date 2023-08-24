@@ -4,18 +4,25 @@ import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.opengl.GLUtils
 import android.opengl.Matrix
+import com.example.surfaceproject.App
 import com.example.surfaceproject.toBuffer
 import javax.microedition.khronos.opengles.GL10
 
+var top = 0f
+var bottom = 0f
+val height = App.ctx.resources.displayMetrics.heightPixels
+val width = App.ctx.resources.displayMetrics.widthPixels
 
 // android 纹理坐标原点是左上角
 // OpenGL 坐标原点是视图正中心
-val textureSqure = padding(floatArrayOf(
-    0f, 0f,
-    1f, 0f,
-    0f, 1f,
-    1f, 1f,
-),0.5f, 0f, 0f, 0f).toBuffer()
+val textureSqure by lazy {
+    padding(floatArrayOf(
+        0f, 0f,
+        1f, 0f,
+        0f, 1f,
+        1f, 1f,
+    ),0f, top / height, 1- 200f/ width, 1- bottom/ height).toBuffer()
+}
 fun padding(vertext: FloatArray,left: Float, top: Float, right:Float, bottom: Float):FloatArray {
     vertext[0] += left
     vertext[4] += left
@@ -23,11 +30,11 @@ fun padding(vertext: FloatArray,left: Float, top: Float, right:Float, bottom: Fl
     vertext[1] += top
     vertext[3] += top
 
-    vertext[2] += right
-    vertext[6] += right
+    vertext[2] -= right
+    vertext[6] -= right
 
-    vertext[5] += bottom
-    vertext[7] += bottom
+    vertext[5] -= bottom
+    vertext[7] -= bottom
     return vertext
 }
 class BitmapTexture(private val index: Int, private var bitmap: Bitmap?) : Texture() {

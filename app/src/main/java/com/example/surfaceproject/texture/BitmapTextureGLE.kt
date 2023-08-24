@@ -1,6 +1,7 @@
 package com.example.surfaceproject.texture
 
 import android.graphics.Bitmap
+import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLUtils
 import com.example.surfaceproject.glsl.Loader
@@ -10,7 +11,9 @@ class BitmapTextureGLE(private val index: Int, private var bitmap: Bitmap?, priv
     val id: Int get() = tid[index]
     fun load(): Int {
         // gl.glActiveTexture(GL10.GL_TEXTURE0 + index)
-        GLES20.glBindTexture(GL10.GL_TEXTURE_2D, id)
+        //GLES20.glBindTexture(GL10.GL_TEXTURE_2D, id)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, id)
+        //GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, id)
         // 设置采用方式, 每个纹理都必须设置
         GLES20.glTexParameteri(
             GLES20.GL_TEXTURE_2D,

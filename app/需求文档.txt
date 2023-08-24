@@ -1,0 +1,18 @@
+主要需求：
+    将屏幕上播放的任意视频存储为mp4文件
+
+实现方式：
+    1. 通过MediaProjection进行屏幕录制
+    2. 通过SurfaceTexture作为纹理
+    3. 通过构建Surface，输出数据到SurfaceTexture作为纹理数据
+    4. 构建OpenGl环境
+    5. 将SurfaceTexture纹理进行绘制
+    6. OpenGL绘制到Surface
+    7. 通过MediaCodec将OpenGL输出到Surface的数据进行保存
+图像数据流程：
+    方案1：MediaProjection->Surface->SurfaceTexture->OpenGL->Surface->MediaCodec->Mp4
+    方案2：MediaProjection->Surface->SurfaceTexture->OpenGL->Surface->MediaRecorder->Mp4
+    方案2更简单，缺点是无法操作数据流
+
+声音问题：
+    、构建AudioRecord和AudioPlaybackCaptureConfiguration来捕获其它应用的音频
