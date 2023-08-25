@@ -1,20 +1,21 @@
-package com.example.surfaceproject.model
+package com.example.surfaceproject.gl.model
 
 import android.opengl.GLES20
-import com.example.surfaceproject.glsl.Loader
-import com.example.surfaceproject.texture.BitmapTextureGLE
-import com.example.surfaceproject.toBuffer
+import com.example.surfaceproject.gl.glsl.Loader
+import com.example.surfaceproject.gl.texture.BitmapTextureGLE
+import com.example.surfaceproject.gl.util.toNativeBuffer
 
 val color = floatArrayOf(1f, 1f, 1f, 1f)
 
 class RectModelGLES(vertex: FloatArray, private val loader: Loader) {
-    val vertexBuffer = vertex.toBuffer()
+    val vertexBuffer = vertex.toNativeBuffer()
     var texture: BitmapTextureGLE? = null
     fun draw() {
+        GLES20.glUseProgram(loader.program)
         // 设置三角形组坐标
-        val location = GLES20.glGetAttribLocation(loader.program, "a_position")
+        val location = GLES20.glGetAttribLocation(loader.program, "inputPosition")
         GLES20.glEnableVertexAttribArray(location)
-        // GLES20.glVertexAttrib1fv(location, vertexBuffer)
+
         GLES20.glVertexAttribPointer(location, 3, GLES20.GL_FLOAT, false, 3 * 4, vertexBuffer)
         // 设置三角形法向, 贴图必须要
 
@@ -28,8 +29,6 @@ class RectModelGLES(vertex: FloatArray, private val loader: Loader) {
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         GLES20.glDisableVertexAttribArray(location)
-        // 绘制图片
-        // GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
-        // gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4)
+        GLES20.glUseProgram(0)
     }
 }

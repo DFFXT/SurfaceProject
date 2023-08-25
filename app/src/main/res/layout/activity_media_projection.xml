@@ -4,7 +4,11 @@
     android:layout_height="match_parent"
     android:background="@color/main_color"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <View
+    <TextView
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="444444"
         android:id="@+id/target"
         android:layout_width="200px"
         android:layout_height="200px"

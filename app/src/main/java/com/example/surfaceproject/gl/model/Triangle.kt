@@ -1,8 +1,8 @@
-package com.example.surfaceproject.model
+package com.example.surfaceproject.gl.model
 
 import android.opengl.GLES20
-import com.example.surfaceproject.glsl.Loader
-import com.example.surfaceproject.toBuffer
+import com.example.surfaceproject.gl.glsl.Loader
+import com.example.surfaceproject.gl.util.toNativeBuffer
 
 class Triangle(private val loader: Loader) {
     private val triangleCoords = floatArrayOf(-1f, 1f, 0f,
@@ -30,7 +30,7 @@ class Triangle(private val loader: Loader) {
             GLES20.GL_FLOAT,
             false,
             vertexStride,
-            triangleCoords.toBuffer(),
+            triangleCoords.toNativeBuffer(),
         )
 
         // get handle to fragment shader's vColor member

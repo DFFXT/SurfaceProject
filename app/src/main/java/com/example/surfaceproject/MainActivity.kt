@@ -1,40 +1,21 @@
 package com.example.surfaceproject
 
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.SurfaceTexture
-import android.opengl.GLES20
-import android.opengl.GLSurfaceView
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.Surface
-import android.view.SurfaceControl
-import android.view.SurfaceHolder
-import android.view.TextureView
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.example.surfaceproject.model.RectModel
-import com.example.surfaceproject.texture.BitmapTexture
-import com.example.surfaceproject.texture.Texture
-import toBitmap
-import java.lang.Exception
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
-import javax.microedition.khronos.opengles.GL10
 
-fun FloatArray.toBuffer(): FloatBuffer {
+/*fun FloatArray.toBuffer(): FloatBuffer {
     val b = ByteBuffer.allocateDirect(size * 4)
     b.order(ByteOrder.nativeOrder())
     val buffer = b.asFloatBuffer()
     buffer.put(this)
     buffer.position(0)
     return buffer
-}
+}*/
 
 class MainActivity : AppCompatActivity() {
-    private val bitmapTexture = BitmapTexture(0 , R.mipmap.icon_local.toBitmap())
+    /*private val bitmapTexture = BitmapTexture(0 , R.mipmap.icon_local.toBitmap())
     private val bitmapTextureBg = BitmapTexture(1, R.mipmap.icon_bg.toBitmap())
     private val bitmapTextureOut = BitmapTexture(2, null)
     private val rect = RectModel(
@@ -191,9 +172,9 @@ class MainActivity : AppCompatActivity() {
                 gl.glDisable(GL10.GL_BLEND)
 
                 // 设置三角形组坐标
-                /*gl.glVertexPointer(3, GL10.GL_FLOAT, 0, rect.vertexBuffer)
+                *//*gl.glVertexPointer(3, GL10.GL_FLOAT, 0, rect.vertexBuffer)
                 // 设置三角形法向
-                gl.glNormalPointer(GL10.GL_FLOAT, 0, fx.toBuffer())*/
+                gl.glNormalPointer(GL10.GL_FLOAT, 0, fx.toBuffer())*//*
                 // 设置纹理坐标
                 // gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureSqure.toBuffer())
                 // 绘制，将三角坐标和纹理坐标对应
@@ -206,5 +187,5 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-    }
+    }*/
 }

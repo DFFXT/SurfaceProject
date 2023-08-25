@@ -9,6 +9,7 @@ import android.view.Surface
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.surfaceproject.gl.util.screenRealSize
 
 class ScreenCapture(private val activity: ComponentActivity) {
     private lateinit var launcher: ActivityResultLauncher<Intent>
@@ -25,7 +26,7 @@ class ScreenCapture(private val activity: ComponentActivity) {
         }
     }
 
-    fun startCapture(surface: Surface, width: Int = activity.resources.displayMetrics.widthPixels, height: Int = activity.resources.displayMetrics.heightPixels) {
+    fun startCapture(surface: Surface, width: Int = screenRealSize().x, height: Int = screenRealSize().y) {
         this.width = width
         this.height = height
         this.surface = surface
