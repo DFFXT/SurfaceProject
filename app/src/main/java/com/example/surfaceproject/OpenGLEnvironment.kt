@@ -8,23 +8,28 @@ import android.opengl.EGLSurface
 import android.os.Handler
 import android.os.Looper
 import android.view.Surface
+import java.util.LinkedList
 
 /**
  * 构建一个OpenGL环境
  */
 class OpenGLEnvironment {
     private lateinit var eglDisplay: EGLDisplay
-    private lateinit var eglSurface: EGLSurface
-    private lateinit var eglContext: EGLContext
+    private val eglSurfaceList = LinkedList<Pair<Surface, EGLSurface>>()
+
+    // private lateinit var eglSurface: EGLSurface
+    lateinit var eglContext: EGLContext
+    private lateinit var eglConfig: EGLConfig
     private lateinit var eglThread: Thread
     private lateinit var handler: Handler
 
     /**
      * @param surface，图像输出
+     * @param shareEGLContext 共享context
      * @param runnable 环境构建成功回调
      */
-    fun createEnvironment(surface: Surface, runnable: (OpenGLEnvironment) -> Unit) {
-        if (this::eglThread.isInitialized) return
+    fun createEnvironment(surface: Surface, shareEGLContext: EGLContext? = null, runnable: (OpenGLEnvironment) -> Unit) {
+        // if (this::eglThread.isInitialized) return
         // 创建EglDisplay
         eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
 
@@ -52,14 +57,11 @@ class OpenGLEnvironment {
             EGL14.eglChooseConfig(eglDisplay, attrList, 0, configs, 0, configs.size, configNumber, 0)
 
             // 通过config，取第一个创建EglSurface对象
-            eglSurface = EGL14.eglCreateWindowSurface(eglDisplay, configs[0]!!, surface, null, 0)
-            val glVersion = intArrayOf(
-                EGL14.EGL_CONTEXT_CLIENT_VERSION,
-                2,
-                EGL14.EGL_NONE,
-            )
+            eglConfig = configs[0]!!
+            val eglSurface = createEglSurface(surface)
+            eglSurfaceList.add(Pair(surface, eglSurface))
             // 创建EglContext对象
-            eglContext = EGL14.eglCreateContext(eglDisplay, configs[0]!!, EGL14.EGL_NO_CONTEXT, glVersion, 0)
+            eglContext = shareEGLContext ?: EGL14.eglCreateContext(eglDisplay, configs[0]!!, EGL14.EGL_NO_CONTEXT, getGlVersion(), 0)
             eglThread = Thread {
                 // 将当前线程绑定到EglContext，和Egl关联气来，这个显示就是gl线程了
                 EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
@@ -72,14 +74,61 @@ class OpenGLEnvironment {
         }
     }
 
+    private fun getGlVersion(): IntArray {
+        return intArrayOf(
+            EGL14.EGL_CONTEXT_CLIENT_VERSION,
+            2,
+            EGL14.EGL_NONE,
+        )
+    }
+
+    private fun createEglSurface(surface: Surface): EGLSurface {
+        return EGL14.eglCreateWindowSurface(eglDisplay, eglConfig, surface, null, 0)
+    }
+
+    /**
+     * 绑定surface，会移除之前的surface
+     */
+    fun bindSurface(surface: Surface) {
+        post {
+            if (eglSurfaceList.find { it.first == surface } == null) {
+                val eglSurface = createEglSurface(surface)
+                EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
+                eglSurfaceList.add(Pair(surface, eglSurface))
+            }
+        }
+    }
+
+    fun removeSurface(surface: Surface) {
+        post {
+            val pair = eglSurfaceList.find { it.first == surface } ?: return@post
+            EGL14.eglDestroySurface(eglDisplay, pair.second)
+        }
+    }
+
     /**
      * 绘制
      * @param runnable 要绘制的操作，会立即交换缓冲区
      */
     fun draw(runnable: Runnable) {
         post {
-            runnable.run()
-            EGL14.eglSwapBuffers(eglDisplay, eglSurface)
+            // runnable.run()
+            eglSurfaceList.forEach {
+                EGL14.eglMakeCurrent(eglDisplay, it.second, it.second, eglContext)
+                runnable.run()
+                EGL14.eglSwapBuffers(eglDisplay, it.second)
+            }
+            /*            val it = eglSurfaceList.getOrNull(1) ?: eglSurfaceList.get(0)
+                        val first = eglSurfaceList.get(0)
+                        EGL14.eglMakeCurrent(eglDisplay, first.second, first.second, eglContext)
+                        //EGL14.eglSwapBuffers(eglDisplay, first.second)
+                        val second = eglSurfaceList.getOrNull(1)
+                        if (second != null) {
+                            EGL14.eglMakeCurrent(eglDisplay, second.second, first.second, eglContext)
+                            EGL14.eglSwapBuffers(eglDisplay, first.second)
+                        } else {
+                            EGL14.eglSwapBuffers(eglDisplay, first.second)
+                        }*/
         }
     }
 

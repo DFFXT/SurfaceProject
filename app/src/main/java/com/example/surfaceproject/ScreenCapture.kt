@@ -32,6 +32,7 @@ class ScreenCapture(private val activity: ComponentActivity) {
         this.surface = surface
         val manager = activity.getSystemService(MediaProjectionManager::class.java)
         launcher.launch(manager.createScreenCaptureIntent())
+        onStart.run()
     }
 
     private fun start(width: Int, height: Int) {

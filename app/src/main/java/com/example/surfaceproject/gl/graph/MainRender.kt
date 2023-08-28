@@ -1,6 +1,7 @@
 package com.example.surfaceproject.gl.graph
 
 import android.graphics.SurfaceTexture
+import android.opengl.EGLContext
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.os.Handler
@@ -12,10 +13,14 @@ import com.example.surfaceproject.gl.graph.model.RectModel
 import com.example.surfaceproject.gl.graph.texture.BitmapTexture
 import com.example.surfaceproject.gl.util.screenRealSize
 
-class Render {
+class MainRender {
     lateinit var surfaceTexture: SurfaceTexture
     lateinit var surface: Surface
-    lateinit var bitmapTexture: BitmapTexture
+    private lateinit var glEnvironment: OpenGLEnvironment
+    companion object {
+        lateinit var bitmapTexture: BitmapTexture
+        var shareEGLContext: EGLContext? = null
+    }
 
     fun start(surface: Surface, onStart: Runnable) {
         /*val v = findViewById<View>(R.id.target)
@@ -26,12 +31,17 @@ class Render {
         val size = screenRealSize()
         val width = size.x
         val height = size.y*/
-        val glEnvironment = OpenGLEnvironment()
+        if (this::glEnvironment.isInitialized) {
+            glEnvironment.bindSurface(surface)
+            return
+        }
+        glEnvironment = OpenGLEnvironment()
         // recorder = SurfaceToMedia(this@MediaProjectionActivity)
 
         val screenSize = screenRealSize()
 
-        glEnvironment.createEnvironment(surface) {
+        glEnvironment.createEnvironment(surface, shareEGLContext) {
+            shareEGLContext = it.eglContext
             // Texture.init(1)
             GLES20.glViewport(0, 0, 200, 200)
             GLES20.glClearColor(1f, 0f, 0f, 1f)
@@ -81,5 +91,8 @@ class Render {
 
     fun setPadding(left: Float, top: Float, right: Float, bottom: Float) {
         bitmapTexture.padding(left, top, right, bottom)
+    }
+    fun bindSurface(surface: Surface) {
+        glEnvironment.bindSurface(surface)
     }
 }
