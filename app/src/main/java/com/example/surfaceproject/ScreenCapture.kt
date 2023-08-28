@@ -26,7 +26,7 @@ class ScreenCapture(private val activity: ComponentActivity) {
         }
     }
 
-    fun startCapture(surface: Surface, width: Int = screenRealSize().x, height: Int = screenRealSize().y) {
+    fun startCapture(surface: Surface, width: Int = screenRealSize().x, height: Int = screenRealSize().y, onStart: Runnable) {
         this.width = width
         this.height = height
         this.surface = surface

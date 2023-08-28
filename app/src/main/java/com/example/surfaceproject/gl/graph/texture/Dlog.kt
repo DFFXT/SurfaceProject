@@ -1,4 +1,4 @@
-package com.example.surfaceproject.gl.texture
+package com.example.surfaceproject.gl.graph.texture
 
 import android.util.Log
 

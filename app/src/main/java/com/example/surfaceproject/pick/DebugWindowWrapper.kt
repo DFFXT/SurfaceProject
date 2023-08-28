@@ -6,6 +6,6 @@ import com.fxf.debugwindowlibaray.ViewDebugManager
 object DebugWindowWrapper {
     fun init(app: Application) {
         ViewDebugManager.init(app)
-        ViewDebugManager.addPage(UiPagePick())
+        // ViewDebugManager.addPage(UiPagePick())
     }
 }

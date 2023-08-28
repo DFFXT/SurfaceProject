@@ -31,6 +31,8 @@ class CanvasView @JvmOverloads constructor(
     private var offsetY = 0f
     private var offsetX = 0f
 
+    var locationChangeListener: ((RectF) -> Unit)? = null
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         val p = intArrayOf(0, 0)
@@ -57,6 +59,9 @@ class CanvasView @JvmOverloads constructor(
         }
         rect.set(min(px1, px2), min(py1, py2), max(px1, px2), max(py1, py2))
         postInvalidate()
+        if (event.action and MotionEvent.ACTION_MASK == MotionEvent.ACTION_UP) {
+            locationChangeListener?.invoke(rect)
+        }
         return true
     }
 

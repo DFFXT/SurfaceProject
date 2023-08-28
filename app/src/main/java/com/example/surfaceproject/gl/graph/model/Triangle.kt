@@ -1,4 +1,4 @@
-package com.example.surfaceproject.gl.model
+package com.example.surfaceproject.gl.graph.model
 
 import android.opengl.GLES20
 import com.example.surfaceproject.gl.glsl.Loader
