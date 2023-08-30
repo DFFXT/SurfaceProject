@@ -9,7 +9,7 @@ import android.view.Surface
 /**
  * surface数据转换程媒体数据
  */
-class SurfaceToMedia(context: Context) {
+class SurfaceToMedia(context: Context, width: Int, height: Int) {
     private val mediaRecorder: MediaRecorder
 
     init {
@@ -26,11 +26,14 @@ class SurfaceToMedia(context: Context) {
         }
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        // mediaRecorder.setVideoSize(width, height)
-        mediaRecorder.setVideoEncoder(VideoEncoder.MPEG_4_SP)
+        // 需要手动设置大小，否则输出视频显示异常
+        mediaRecorder.setVideoSize(width, height)
+        // 模拟器无法设置mp4的编码器
+        mediaRecorder.setVideoEncoder(VideoEncoder.DEFAULT)
         mediaRecorder.setVideoFrameRate(30)
         // 设置比特率，即每秒处理和传输的字节数量
         mediaRecorder.setVideoEncodingBitRate(150000)
+        // mediaRecorder.setPreviewDisplay(surface)
         // mediaRecorder.setInputSurface(surface)
         mediaRecorder.setOutputFile(context.externalCacheDir!!.absolutePath + "/1.mp4")
         mediaRecorder.prepare()

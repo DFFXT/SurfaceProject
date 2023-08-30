@@ -33,6 +33,9 @@ class CanvasView @JvmOverloads constructor(
 
     var locationChangeListener: ((RectF) -> Unit)? = null
 
+    // 是否改变区域
+    private var resizeEnable = true
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         val p = intArrayOf(0, 0)
@@ -44,6 +47,7 @@ class CanvasView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!resizeEnable) return false
         when (event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
                 px1 = event.rawX
@@ -70,5 +74,11 @@ class CanvasView @JvmOverloads constructor(
         canvas?.translate(-offsetX, -offsetY)
         canvas?.drawRect(rect, paint)
         canvas?.translate(offsetX, offsetY)
+    }
+
+    fun getCurrentRect() = rect
+
+    fun enableResize(enable: Boolean) {
+        this.resizeEnable = enable
     }
 }

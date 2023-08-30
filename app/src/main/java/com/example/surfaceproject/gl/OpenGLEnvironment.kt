@@ -1,4 +1,4 @@
-package com.example.surfaceproject
+package com.example.surfaceproject.gl
 
 import android.opengl.EGL14
 import android.opengl.EGLConfig
@@ -22,6 +22,7 @@ class OpenGLEnvironment {
     private lateinit var eglConfig: EGLConfig
     private lateinit var eglThread: Thread
     private lateinit var handler: Handler
+    private val actions = LinkedList<Runnable>()
 
     /**
      * @param surface，图像输出
@@ -29,7 +30,11 @@ class OpenGLEnvironment {
      * @param runnable 环境构建成功回调
      */
     fun createEnvironment(surface: Surface, shareEGLContext: EGLContext? = null, runnable: (OpenGLEnvironment) -> Unit) {
-        // if (this::eglThread.isInitialized) return
+        if (this::eglDisplay.isInitialized) return
+        // 绑定surface，会在gl环境创建好后执行真正的绑定
+        if (surface != null) {
+            bindSurface(surface)
+        }
         // 创建EglDisplay
         eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
 
@@ -68,6 +73,10 @@ class OpenGLEnvironment {
                 Looper.prepare()
                 handler = Handler(Looper.myLooper()!!)
                 runnable(this)
+                actions.forEach {
+                    it.run()
+                }
+                actions.clear()
                 Looper.loop()
             }
             eglThread.start()
@@ -99,10 +108,13 @@ class OpenGLEnvironment {
         }
     }
 
-    fun removeSurface(surface: Surface) {
+    fun removeSurface(vararg surfaces: Surface) {
         post {
-            val pair = eglSurfaceList.find { it.first == surface } ?: return@post
-            EGL14.eglDestroySurface(eglDisplay, pair.second)
+            surfaces.forEach { surface ->
+                val pair = eglSurfaceList.find { it.first == surface } ?: return@post
+                eglSurfaceList.remove(pair)
+                EGL14.eglDestroySurface(eglDisplay, pair.second)
+            }
         }
     }
 
@@ -118,17 +130,6 @@ class OpenGLEnvironment {
                 runnable.run()
                 EGL14.eglSwapBuffers(eglDisplay, it.second)
             }
-            /*            val it = eglSurfaceList.getOrNull(1) ?: eglSurfaceList.get(0)
-                        val first = eglSurfaceList.get(0)
-                        EGL14.eglMakeCurrent(eglDisplay, first.second, first.second, eglContext)
-                        //EGL14.eglSwapBuffers(eglDisplay, first.second)
-                        val second = eglSurfaceList.getOrNull(1)
-                        if (second != null) {
-                            EGL14.eglMakeCurrent(eglDisplay, second.second, first.second, eglContext)
-                            EGL14.eglSwapBuffers(eglDisplay, first.second)
-                        } else {
-                            EGL14.eglSwapBuffers(eglDisplay, first.second)
-                        }*/
         }
     }
 
@@ -137,10 +138,24 @@ class OpenGLEnvironment {
      * @param runnable action
      */
     fun post(runnable: Runnable) {
-        if (Thread.currentThread() == eglThread) {
-            runnable.run()
+        if (!this::handler.isInitialized) {
+            actions.add(runnable)
         } else {
-            handler.post(runnable)
+            if (Thread.currentThread() == eglThread) {
+                runnable.run()
+            } else {
+                handler.post(runnable)
+            }
+        }
+    }
+
+    /**
+     * 释放
+     */
+    fun release() {
+        removeSurface(*eglSurfaceList.map { it.first }.toTypedArray())
+        post {
+            eglThread.interrupt()
         }
     }
 }

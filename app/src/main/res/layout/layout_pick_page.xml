@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.surfaceproject.pick.CanvasView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/canvasView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <LinearLayout
+        android:id="@+id/layout_toolBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        tools:visibility="visible">
+        <TextView
+            android:id="@+id/tv_record"
+            android:layout_width="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:layout_height="30dp"
+            android:background="@color/view_debug_image_detail_title_bar_bg"
+            android:gravity="center"
+            android:text="录制"
+            android:textColor="@color/view_debug_white" />
+    </LinearLayout>
+
+    <SurfaceView
+        android:id="@+id/view_rect"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/view_debug_common_rect_stroke_1dp"
+        android:backgroundTint="#ffff0000"/>
+</com.example.surfaceproject.pick.CanvasView>

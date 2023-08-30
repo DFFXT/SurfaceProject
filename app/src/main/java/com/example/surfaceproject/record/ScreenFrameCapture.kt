@@ -1,14 +1,15 @@
-package com.mx.screenshot
+package com.example.surfaceproject.record
 
 import android.graphics.Bitmap
 import android.media.ImageReader
 import java.io.FileOutputStream
 
-class ScreenCapture(private val recorder: ScreenRecord) {
+class ScreenFrameCapture(private val recorder: ScreenCaptureInitialize) {
     private val imageReader by lazy { ImageReader.newInstance(1920, 720, 0x1, 2) }
 
     fun init() {
-        recorder.startCapture(imageReader.surface, 1920, 720)
+        recorder.getCore().setSurface(imageReader.surface)
+        recorder.getCore().start(1920, 720, 300)
     }
 
     fun capture(callback: (Bitmap) -> Unit) {

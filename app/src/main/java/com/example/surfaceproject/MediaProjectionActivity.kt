@@ -8,21 +8,21 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.surfaceproject.gl.graph.MainRender
+import com.example.surfaceproject.pick.gl.ScreenRecordGLRender
 import com.example.surfaceproject.gl.util.screenRealSize
 import com.example.surfaceproject.media.SurfaceToMedia
 import com.example.surfaceproject.pick.UiPagePick
+import com.example.surfaceproject.record.ScreenCaptureInitialize
 import com.fxf.debugwindowlibaray.ViewDebugManager
 
 class MediaProjectionActivity : AppCompatActivity() {
     private var recorder: SurfaceToMedia? = null
-    private val capture = ScreenCapture(this)
-    lateinit var glEnvironment: OpenGLEnvironment
+    private val capture = ScreenCaptureInitialize(this)
 
     // SurfaceTexture 需要防止被回收
     lateinit var surfaceTexture: SurfaceTexture
-    private val render = MainRender()
-    private val pickPage = UiPagePick()
+    private val render = ScreenRecordGLRender()
+    private lateinit var pickPage : UiPagePick
     private val loopRun = object : Runnable {
         override fun run() {
             findViewById<View>(R.id.target).post(this)
@@ -37,14 +37,8 @@ class MediaProjectionActivity : AppCompatActivity() {
         val surfaceView2 = findViewById<SurfaceView>(R.id.surfaceView2)
         surfaceView2.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
-                return
-                surfaceView2.post {
-                    render.start(holder.surface) {
-                        val size = screenRealSize()
-                        /*capture.startCapture(render.surface, size.x, size.y) {
-                        }*/
-                    }
-                }
+                //return
+                render.bindSurface(holder.surface)
 
             }
 
@@ -57,6 +51,7 @@ class MediaProjectionActivity : AppCompatActivity() {
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
+                render.removeSurface(holder.surface)
             }
         })
         loopRun.run()
@@ -74,15 +69,13 @@ class MediaProjectionActivity : AppCompatActivity() {
 
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
-                recorder = SurfaceToMedia(this@MediaProjectionActivity)
-                render.start(recorder!!.surface()) {
+                //recorder = SurfaceToMedia(this@MediaProjectionActivity, 200,200)
+                render.create(holder.surface) {
                     val size = screenRealSize()
-                    capture.startCapture(render.surface, size.x, size.y) {
-
-                    }
-
-                    // render.bindSurface(recorder!!.surface())
+                    //capture.startCapture(render.surface, size.x, size.y)
                 }
+                render.bindSurface(holder.surface)
+                //render.bindSurface(holder.surface)
             }
 
             override fun surfaceChanged(
@@ -94,6 +87,7 @@ class MediaProjectionActivity : AppCompatActivity() {
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
+                render.removeSurface(holder.surface)
             }
         })
     }
