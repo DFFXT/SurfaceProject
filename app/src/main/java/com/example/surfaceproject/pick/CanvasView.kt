@@ -61,7 +61,15 @@ class CanvasView @JvmOverloads constructor(
                 py2 = event.rawY
             }
         }
-        rect.set(min(px1, px2), min(py1, py2), max(px1, px2), max(py1, py2))
+        // 范围约束
+        rect.set(max(min(px1, px2), 0f), max(min(py1, py2), 0f), min(max(px1, px2), width.toFloat()), min(max(py1, py2), height.toFloat()))
+        // 宽高约束，不能是奇数【SoftVideoEncoderOMXComponent.cpp中有限制】
+        if (rect.width().toInt() and 1 != 0) {
+            rect.right += 1
+        }
+        if (rect.height().toInt() and 1 != 0) {
+            rect.bottom += 1
+        }
         postInvalidate()
         if (event.action and MotionEvent.ACTION_MASK == MotionEvent.ACTION_UP) {
             locationChangeListener?.invoke(rect)

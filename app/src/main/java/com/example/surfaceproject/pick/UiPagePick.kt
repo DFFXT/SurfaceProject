@@ -2,10 +2,12 @@ package com.example.surfaceproject.pick
 
 import android.content.Context
 import android.graphics.RectF
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.example.surfaceproject.MainActivity
@@ -22,13 +24,14 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
         binding.root.getLocationOnScreen(arr)
         arr
     }
-    private val screenRecordManager = ScreenRecordManager()
+    private var screenRecordManager = ScreenRecordManager()
     override fun getTabIcon(): Int = com.fxf.debugwindowlibaray.R.mipmap.view_debug_common_close
 
     override fun onCreateContentView(ctx: Context, parent: ViewGroup): View {
         binding = LayoutPickPageBinding.inflate(LayoutInflater.from(ctx), parent, false)
 
         binding.canvasView.locationChangeListener = { rect ->
+            Log.i("ssf", rect.toString())
 
             binding.layoutToolBar.isVisible = rect.width() > 20
             binding.layoutToolBar.translationX = rect.left - positionOnScreen[0]
@@ -37,11 +40,14 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
                 it.onResult(rect)
             }
             if (rect.width() > 20) {
-                screenRecordManager.prepare(rect)
-            }
-            binding.viewRect.updateLayoutParams<ViewGroup.LayoutParams> {
-                width = rect.width().toInt()
-                height = rect.height().toInt()
+                if (screenRecordManager.prepare(rect)) {
+                    binding.viewRect.updateLayoutParams<ViewGroup.LayoutParams> {
+                        width = rect.width().toInt()
+                        height = rect.height().toInt()
+                    }
+                } else {
+                    Toast.makeText(ctx, "视频长宽太极端，无法输出视频", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         binding.tvRecord.enableSelect()
@@ -52,7 +58,12 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
             ArrayList(resultListener).forEach {
                 it.startRecord(binding.canvasView.getCurrentRect())
             }
-            screenRecordManager.startRecord()
+            if (binding.tvRecord.isSelected) {
+                screenRecordManager.prepare(binding.canvasView.getCurrentRect())
+                screenRecordManager.startRecord()
+            } else {
+                screenRecordManager.stop()
+            }
         }
 
         binding.viewRect.holder.addCallback(object : SurfaceHolder.Callback2 {

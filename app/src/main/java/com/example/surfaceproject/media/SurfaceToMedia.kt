@@ -9,16 +9,11 @@ import android.view.Surface
 /**
  * surface数据转换程媒体数据
  */
-class SurfaceToMedia(context: Context, width: Int, height: Int) {
-    private val mediaRecorder: MediaRecorder
+class SurfaceToMedia(private val context: Context) {
+    private lateinit var mediaRecorder: MediaRecorder
+    private var surface: Surface? = null
 
-    init {
-        /*val format = MediaFormat.createVideoFormat("video/mp4v-es", 200, 200)
-        val encoderName = MediaCodecList(MediaCodecList.REGULAR_CODECS).findEncoderForFormat(format)
-        val mediaCodec = MediaCodec.createByCodecName(encoderName)
-        mediaCodec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
-        MediaRecorder().
-        MediaRecorder.VideoSource.SURFACE*/
+    fun prepare(width: Int, height: Int) {
         mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             MediaRecorder(context)
         } else {
@@ -37,9 +32,10 @@ class SurfaceToMedia(context: Context, width: Int, height: Int) {
         // mediaRecorder.setInputSurface(surface)
         mediaRecorder.setOutputFile(context.externalCacheDir!!.absolutePath + "/1.mp4")
         mediaRecorder.prepare()
+        surface = mediaRecorder.surface
     }
 
-    fun surface() = mediaRecorder.surface
+    fun surface() = surface
 
     fun start() {
         mediaRecorder.start()
@@ -59,5 +55,6 @@ class SurfaceToMedia(context: Context, width: Int, height: Int) {
 
     fun release() {
         mediaRecorder.release()
+        surface?.release()
     }
 }

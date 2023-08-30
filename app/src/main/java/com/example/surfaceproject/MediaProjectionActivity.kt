@@ -8,10 +8,10 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.surfaceproject.pick.gl.ScreenRecordGLRender
 import com.example.surfaceproject.gl.util.screenRealSize
 import com.example.surfaceproject.media.SurfaceToMedia
 import com.example.surfaceproject.pick.UiPagePick
+import com.example.surfaceproject.pick.gl.ScreenRecordGLRender
 import com.example.surfaceproject.record.ScreenCaptureInitialize
 import com.fxf.debugwindowlibaray.ViewDebugManager
 
@@ -22,7 +22,7 @@ class MediaProjectionActivity : AppCompatActivity() {
     // SurfaceTexture 需要防止被回收
     lateinit var surfaceTexture: SurfaceTexture
     private val render = ScreenRecordGLRender()
-    private lateinit var pickPage : UiPagePick
+    private lateinit var pickPage: UiPagePick
     private val loopRun = object : Runnable {
         override fun run() {
             findViewById<View>(R.id.target).post(this)
@@ -37,9 +37,8 @@ class MediaProjectionActivity : AppCompatActivity() {
         val surfaceView2 = findViewById<SurfaceView>(R.id.surfaceView2)
         surfaceView2.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
-                //return
+                // return
                 render.bindSurface(holder.surface)
-
             }
 
             override fun surfaceChanged(
@@ -69,13 +68,13 @@ class MediaProjectionActivity : AppCompatActivity() {
 
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
-                //recorder = SurfaceToMedia(this@MediaProjectionActivity, 200,200)
+                // recorder = SurfaceToMedia(this@MediaProjectionActivity, 200,200)
                 render.create(holder.surface) {
                     val size = screenRealSize()
-                    //capture.startCapture(render.surface, size.x, size.y)
+                    // capture.startCapture(render.surface, size.x, size.y)
                 }
                 render.bindSurface(holder.surface)
-                //render.bindSurface(holder.surface)
+                // render.bindSurface(holder.surface)
             }
 
             override fun surfaceChanged(

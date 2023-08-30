@@ -38,15 +38,24 @@ class ScreenRecordManager {
 
     /**
      * 环境准备
+     * @return true 成功准备
      */
-    fun prepare(rectF: RectF) {
+    fun prepare(rectF: RectF): Boolean {
         // 准备surface到媒体工具
-        recorder = SurfaceToMedia(App.ctx, rectF.width().toInt(), rectF.height().toInt())
+        try {
+            // 经测试，在雷电模拟器上，如果视频长宽比太大或太小会直接IOException
+            reset()
+            recorder = SurfaceToMedia(App.ctx)
+            recorder.prepare(rectF.width().toInt(), rectF.height().toInt())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
         // 准备opengl环境
         val size = screenRealSize()
         val width = size.x
         val height = size.y
-        render.create(recorder.surface()) {}
+        render.create(recorder.surface()!!) {}
         // 设置预览
         previewSurface?.let {
             render.bindSurface(it)
@@ -60,6 +69,7 @@ class ScreenRecordManager {
             render.setPadding(rectF.left / width, rectF.top / height, 1 - rectF.right / width, 1 - rectF.bottom / height)
             render.onSurfaceSizeChanged(rectF.width().toInt(), rectF.height().toInt())
         }
+        return true
     }
 
     /**
@@ -68,11 +78,8 @@ class ScreenRecordManager {
      */
     fun startRecord() {
         // gl输出到surface
-        render.bindSurface(recorder.surface())
-        val size = screenRealSize()
-        val width = size.x
-        val height = size.y
-        // 启动录屏
+        render.bindSurface(recorder.surface()!!)
+        recorder.start()
     }
 
     fun pause() {
@@ -85,11 +92,21 @@ class ScreenRecordManager {
 
     fun stop() {
         recorder.stop()
+        reset()
     }
 
     fun release() {
         // capture.release()
         recorder.release()
         render.release()
+    }
+
+    private fun reset() {
+        if (::recorder.isInitialized) {
+            recorder.surface()?.let {
+                render.removeSurface(it)
+            }
+            recorder.release()
+        }
     }
 }
