@@ -56,5 +56,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.github.DFFXT:SkinSwitch:0.17.2'
+    implementation 'com.github.DFFXT:PreferenceUtils:1.2.2'
     implementation(project(":debugWindow"))
 }

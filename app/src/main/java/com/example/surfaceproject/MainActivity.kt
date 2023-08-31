@@ -1,11 +1,9 @@
 package com.example.surfaceproject
 
 import android.content.Context
-import android.graphics.RectF
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.surfaceproject.gl.util.screenRealSize
-import com.example.surfaceproject.pick.UiPagePick
+import com.example.surfaceproject.pick.page.UiPagePick
 import com.example.surfaceproject.record.ScreenCaptureInitialize
 import com.fxf.debugwindowlibaray.ViewDebugManager
 

@@ -1,4 +1,4 @@
-package com.example.surfaceproject.pick
+package com.example.surfaceproject.pick.page
 
 import android.content.Context
 import android.graphics.RectF
@@ -12,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.example.surfaceproject.MainActivity
 import com.example.surfaceproject.databinding.LayoutPickPageBinding
+import com.example.surfaceproject.pick.ScreenRecordManager
 import com.example.surfaceproject.record.ScreenCaptureCore
 import com.fxf.debugwindowlibaray.ui.UIPage
 import com.fxf.debugwindowlibaray.util.enableSelect
