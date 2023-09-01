@@ -2,6 +2,7 @@ package com.example.surfaceproject
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.surfaceproject.pick.page.UiPagePick
 import com.example.surfaceproject.record.ScreenCaptureInitialize
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        Log.i("ssssf", "resume$this")
         // recorder.resume()
     }
 }

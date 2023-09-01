@@ -25,10 +25,8 @@
             android:textColor="@color/view_debug_white" />
     </LinearLayout>
 
-    <SurfaceView
+    <TextureView
         android:id="@+id/view_rect"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/view_debug_common_rect_stroke_1dp"
-        android:backgroundTint="#ffff0000"/>
+        android:layout_height="0dp"/>
 </com.example.surfaceproject.pick.CanvasView>

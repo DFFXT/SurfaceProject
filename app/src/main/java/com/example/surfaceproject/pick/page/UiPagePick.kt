@@ -2,9 +2,11 @@ package com.example.surfaceproject.pick.page
 
 import android.content.Context
 import android.graphics.RectF
+import android.graphics.SurfaceTexture
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.SurfaceHolder
+import android.view.Surface
+import android.view.TextureView.SurfaceTextureListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -67,7 +69,23 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
             }
         }
 
-        binding.viewRect.holder.addCallback(object : SurfaceHolder.Callback2 {
+        binding.viewRect.surfaceTextureListener = object : SurfaceTextureListener {
+            override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+                val s = Surface(surface)
+                screenRecordManager.setPreviewSurface(s)
+            }
+
+            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
+            }
+
+            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+                return false
+            }
+
+            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+            }
+        }
+       /* binding.viewRect.holder.addCallback(object : SurfaceHolder.Callback2 {
             override fun surfaceCreated(holder: SurfaceHolder) {
                 screenRecordManager.setPreviewSurface(binding.viewRect.holder.surface)
             }
@@ -81,7 +99,7 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
 
             override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
             }
-        })
+        })*/
         return binding.root
     }
 

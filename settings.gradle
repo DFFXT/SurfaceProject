@@ -16,5 +16,6 @@ dependencyResolutionManagement {
 rootProject.name = "SurfaceProject"
 include ':app'
 
+/*
 include(":debugWindow")
-project(":debugWindow").projectDir = new File("D:\\Android\\Project\\DebugWindow\\DebugWindowLibaray")
+project(":debugWindow").projectDir = new File("D:\\Android\\Project\\DebugWindow\\DebugWindowLibaray")*/
