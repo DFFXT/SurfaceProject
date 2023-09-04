@@ -5,9 +5,9 @@ import android.graphics.RectF
 import android.view.Surface
 import com.example.surfaceproject.App
 import com.example.surfaceproject.gl.util.screenRealSize
-import com.example.surfaceproject.record.SurfaceToMedia
 import com.example.surfaceproject.pick.gl.ScreenRecordGLRender
 import com.example.surfaceproject.record.ScreenCaptureCore
+import com.example.surfaceproject.record.SurfaceToMedia
 
 /**
  * 录屏部分区域转mp4
@@ -43,7 +43,7 @@ class ScreenRecordManager {
     fun prepare(rectF: RectF): Boolean {
         // 准备surface到媒体工具
         try {
-            // 经测试，在雷电模拟器上，如果视频长宽比太大或太小会直接IOException
+            // 经测试，在雷电模拟器上，如果视频尺寸太小会直接IOException
             reset()
             recorder = SurfaceToMedia(App.ctx)
             recorder.prepare(rectF.width().toInt(), rectF.height().toInt())
@@ -55,6 +55,7 @@ class ScreenRecordManager {
         val size = screenRealSize()
         val width = size.x
         val height = size.y
+
         render.create(recorder.surface()!!) {}
         // 设置预览
         previewSurface?.let {

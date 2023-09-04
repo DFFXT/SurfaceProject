@@ -31,8 +31,7 @@ class ScreenRecordGLRender {
         glEnvironment = OpenGLEnvironment()
         val screenSize = screenRealSize()
         glEnvironment.createEnvironment(surface, null) {
-            GLES20.glViewport(0, 0, 1, 1)
-            GLES20.glClearColor(1f, 0f, 0f, 1f)
+            // GLES20.glClearColor(1f, 0f, 0f, 1f)
             val loader = RectLoader()
             bitmapTexture = BitmapTexture(loader)
             surfaceTexture = SurfaceTexture(bitmapTexture.id, false)
@@ -50,7 +49,6 @@ class ScreenRecordGLRender {
                 loader,
             )
             rect.texture = bitmapTexture
-            val arr = FloatArray(16)
             fun d() {
                 it.draw {
                     GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
@@ -62,9 +60,7 @@ class ScreenRecordGLRender {
             d()
 
             surfaceTexture.setOnFrameAvailableListener({
-                val f = 0
                 it.updateTexImage()
-                it.getTransformMatrix(arr)
                 d()
             }, Handler(Looper.myLooper()!!))
             onStart.run()

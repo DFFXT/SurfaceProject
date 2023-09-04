@@ -48,21 +48,22 @@ class BitmapTexture : Texture {
         // gl.glActiveTexture(GL10.GL_TEXTURE0 + index)
         // GLES20.glBindTexture(GL10.GL_TEXTURE_2D, id)
         // GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, id)
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, id)
+        // bitmap不能是GLES11Ext.GL_TEXTURE_EXTERNAL_OES纹理
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, id)
         // 设置采用方式, 每个纹理都必须设置
         GLES20.glTexParameteri(
-            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_2D,
             GLES20.GL_TEXTURE_MIN_FILTER,
             GLES20.GL_LINEAR,
         )
         GLES20.glTexParameteri(
-            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+            GLES20.GL_TEXTURE_2D,
             GLES20.GL_TEXTURE_MAG_FILTER,
             GLES20.GL_LINEAR,
         )
 
         if (bitmap != null) {
-            GLUtils.texImage2D(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0, bitmap, 0)
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
             bitmap?.recycle()
             bitmap = null
         }

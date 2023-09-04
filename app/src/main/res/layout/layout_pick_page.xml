@@ -25,7 +25,7 @@
             android:textColor="@color/view_debug_white" />
     </LinearLayout>
 
-    <TextureView
+    <SurfaceView
         android:id="@+id/view_rect"
         android:layout_width="0dp"
         android:layout_height="0dp"/>

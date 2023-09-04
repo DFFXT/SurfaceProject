@@ -2,11 +2,9 @@ package com.example.surfaceproject.pick.page
 
 import android.content.Context
 import android.graphics.RectF
-import android.graphics.SurfaceTexture
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Surface
-import android.view.TextureView.SurfaceTextureListener
+import android.view.SurfaceHolder
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -19,7 +17,6 @@ import com.fxf.debugwindowlibaray.ui.UIPage
 import com.fxf.debugwindowlibaray.util.enableSelect
 
 class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
-    private val resultListener: HashSet<PickListener> = HashSet()
     private lateinit var binding: LayoutPickPageBinding
     private val positionOnScreen by lazy {
         val arr = intArrayOf(0, 0)
@@ -33,14 +30,11 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
         binding = LayoutPickPageBinding.inflate(LayoutInflater.from(ctx), parent, false)
 
         binding.canvasView.locationChangeListener = { rect ->
-            Log.i("ssf", rect.toString())
 
             binding.layoutToolBar.isVisible = rect.width() > 20
             binding.layoutToolBar.translationX = rect.left - positionOnScreen[0]
             binding.layoutToolBar.translationY = rect.bottom - positionOnScreen[1]
-            ArrayList(resultListener).forEach {
-                it.onResult(rect)
-            }
+
             if (rect.width() > 20) {
                 if (screenRecordManager.prepare(rect)) {
                     binding.viewRect.updateLayoutParams<ViewGroup.LayoutParams> {
@@ -57,9 +51,7 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
             binding.tvRecord.isSelected = !binding.tvRecord.isSelected
             // 开始录制时不允许修改大小
             binding.canvasView.enableResize(!binding.tvRecord.isSelected)
-            ArrayList(resultListener).forEach {
-                it.startRecord(binding.canvasView.getCurrentRect())
-            }
+
             if (binding.tvRecord.isSelected) {
                 screenRecordManager.prepare(binding.canvasView.getCurrentRect())
                 screenRecordManager.startRecord()
@@ -68,25 +60,9 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
             }
         }
 
-        binding.viewRect.surfaceTextureListener = object : SurfaceTextureListener {
-            override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-                val s = Surface(surface)
-                screenRecordManager.setPreviewSurface(s)
-            }
-
-            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-            }
-
-            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-                return false
-            }
-
-            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
-            }
-        }
-       /* binding.viewRect.holder.addCallback(object : SurfaceHolder.Callback2 {
+        binding.viewRect.holder.addCallback(object : SurfaceHolder.Callback2 {
             override fun surfaceCreated(holder: SurfaceHolder) {
-                screenRecordManager.setPreviewSurface(binding.viewRect.holder.surface)
+                screenRecordManager.setPreviewSurface(holder.surface)
             }
 
             override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -98,17 +74,14 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
 
             override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
             }
-        })*/
+        })
+
         return binding.root
     }
 
     override fun onShow() {
         super.onShow()
         screenRecordManager.init(core, ctx)
-    }
-
-    fun addPickResultListener(listener: PickListener) {
-        resultListener.add(listener)
     }
 
     interface PickListener {

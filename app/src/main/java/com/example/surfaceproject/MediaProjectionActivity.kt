@@ -55,7 +55,7 @@ class MediaProjectionActivity : AppCompatActivity() {
         })
         loopRun.run()
         ViewDebugManager.addPage(pickPage)
-        pickPage.addPickResultListener(object : UiPagePick.PickListener {
+       /* pickPage.addPickResultListener(object : UiPagePick.PickListener {
 
             val size = screenRealSize()
             val width = size.x
@@ -64,7 +64,7 @@ class MediaProjectionActivity : AppCompatActivity() {
                 render.setPadding(rectF.left / width, rectF.top / height, 1 - rectF.right / width, 1 - rectF.bottom / height)
                 // render.setPadding(0, )
             }
-        })
+        })*/
 
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {

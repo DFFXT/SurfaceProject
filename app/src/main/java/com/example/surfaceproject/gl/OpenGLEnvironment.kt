@@ -32,9 +32,9 @@ class OpenGLEnvironment {
     fun createEnvironment(surface: Surface, shareEGLContext: EGLContext? = null, runnable: (OpenGLEnvironment) -> Unit) {
         if (this::eglDisplay.isInitialized) return
         // 绑定surface，会在gl环境创建好后执行真正的绑定
-        if (surface != null) {
+        /*if (surface != null) {
             bindSurface(surface)
-        }
+        }*/
         // 创建EglDisplay
         eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
 
@@ -156,6 +156,7 @@ class OpenGLEnvironment {
         removeSurface(*eglSurfaceList.map { it.first }.toTypedArray())
         post {
             eglThread.interrupt()
+            Looper.myLooper()?.quitSafely()
         }
     }
 }

@@ -35,8 +35,8 @@ object VideoQuery {
      * 根据传入的displayName
      * 验证文件是否存在，返回存在项
      */
-    fun getValidVideo(enumArgs: List<String>): List<Pair<String, Int>> {
-        val result = LinkedList<Pair<String, Int>>()
+    fun getValidVideo(enumArgs: List<String>): List<Pair<String, Long>> {
+        val result = LinkedList<Pair<String, Long>>()
         App.ctx.contentResolver.query(
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME),
@@ -45,7 +45,7 @@ object VideoQuery {
             null,
         )?.use {
             while (it.moveToNext()) {
-                result.add(Pair(it.getString(1), it.getInt(0)))
+                result.add(Pair(it.getString(1), it.getLong(0)))
             }
         }
         return result
