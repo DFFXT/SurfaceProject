@@ -11,7 +11,6 @@ class App: Application() {
     override fun onCreate() {
         super.onCreate()
         ctx = this
-        Config.ctx = this
         DebugWindowWrapper.init(this)
     }
 }
