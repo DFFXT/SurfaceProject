@@ -1,10 +1,13 @@
-package com.example.surfaceproject.media
+package com.example.surfaceproject.record
 
 import android.content.Context
 import android.media.MediaRecorder
 import android.media.MediaRecorder.VideoEncoder
 import android.os.Build
+import android.os.ParcelFileDescriptor
 import android.view.Surface
+import com.example.surfaceproject.pick.storage.VideoQuery
+import com.example.surfaceproject.pick.storage.VideoConfig
 
 /**
  * surface数据转换程媒体数据
@@ -12,6 +15,8 @@ import android.view.Surface
 class SurfaceToMedia(private val context: Context) {
     private lateinit var mediaRecorder: MediaRecorder
     private var surface: Surface? = null
+    private lateinit var pfd: ParcelFileDescriptor
+    private lateinit var videoName: String
 
     fun prepare(width: Int, height: Int) {
         mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -30,7 +35,11 @@ class SurfaceToMedia(private val context: Context) {
         mediaRecorder.setVideoEncodingBitRate(150000)
         // mediaRecorder.setPreviewDisplay(surface)
         // mediaRecorder.setInputSurface(surface)
-        mediaRecorder.setOutputFile(context.externalCacheDir!!.absolutePath + "/1.mp4")
+        // 通过AFS访问媒体文件
+        videoName = "screenCapture_video_" + System.currentTimeMillis() + ".mp4"
+        val uri = VideoQuery.createVideo(videoName)
+        pfd = context.contentResolver.openFileDescriptor(uri, "rw")!!
+        mediaRecorder.setOutputFile(pfd.fileDescriptor)
         mediaRecorder.prepare()
         surface = mediaRecorder.surface
     }
@@ -51,6 +60,8 @@ class SurfaceToMedia(private val context: Context) {
 
     fun stop() {
         mediaRecorder.stop()
+        pfd.close()
+        VideoConfig.addVideoItem(VideoConfig.VideoItem(videoName))
     }
 
     fun release() {

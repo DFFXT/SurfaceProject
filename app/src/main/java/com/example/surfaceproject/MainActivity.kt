@@ -1,9 +1,9 @@
 package com.example.surfaceproject
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.surfaceproject.permission.IOPermission
 import com.example.surfaceproject.pick.page.UiPagePick
 import com.example.surfaceproject.record.ScreenCaptureInitialize
 import com.fxf.debugwindowlibaray.ViewDebugManager
@@ -11,19 +11,24 @@ import com.fxf.debugwindowlibaray.ViewDebugManager
 class MainActivity : AppCompatActivity() {
 
     private val screenRecord = ScreenCaptureInitialize(this)
-
-    companion object {
-        var ctx: Context? = null
-    }
+    private val ioPermission = IOPermission(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ctx = this
-        screenRecord.init {
-            if (!it) return@init
-            val pickPage = UiPagePick(screenRecord.getCore())
-            ViewDebugManager.addPage(pickPage)
+        ioPermission.request { ioGranted ->
+            if (ioGranted) {
+                screenRecord.init {
+                    if (it) {
+                        val pickPage = UiPagePick(screenRecord.getCore())
+                        ViewDebugManager.addPage(pickPage)
+                    } else {
+                        finish()
+                    }
+                }
+            } else {
+                finish()
+            }
         }
     }
 

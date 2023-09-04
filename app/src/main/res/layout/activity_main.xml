@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <SurfaceView
+   <!-- <SurfaceView
         android:id="@+id/surfaceView"
         android:layout_width="200px"
-        android:layout_height="200px"/>
+        android:layout_height="200px"/>-->
 
 
 

@@ -5,7 +5,7 @@ import android.graphics.RectF
 import android.view.Surface
 import com.example.surfaceproject.App
 import com.example.surfaceproject.gl.util.screenRealSize
-import com.example.surfaceproject.media.SurfaceToMedia
+import com.example.surfaceproject.record.SurfaceToMedia
 import com.example.surfaceproject.pick.gl.ScreenRecordGLRender
 import com.example.surfaceproject.record.ScreenCaptureCore
 

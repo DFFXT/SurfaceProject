@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.surfaceproject.gl.util.screenRealSize
-import com.example.surfaceproject.media.SurfaceToMedia
+import com.example.surfaceproject.record.SurfaceToMedia
 import com.example.surfaceproject.pick.page.UiPagePick
 import com.example.surfaceproject.pick.gl.ScreenRecordGLRender
 import com.example.surfaceproject.record.ScreenCaptureInitialize

@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import com.example.surfaceproject.MainActivity
 import com.example.surfaceproject.databinding.LayoutPickPageBinding
 import com.example.surfaceproject.pick.ScreenRecordManager
 import com.example.surfaceproject.record.ScreenCaptureCore
@@ -105,7 +104,7 @@ class UiPagePick(private val core: ScreenCaptureCore) : UIPage() {
 
     override fun onShow() {
         super.onShow()
-        screenRecordManager.init(core, MainActivity.ctx!!)
+        screenRecordManager.init(core, ctx)
     }
 
     fun addPickResultListener(listener: PickListener) {

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.surfaceproject.R
 import com.example.surfaceproject.databinding.ItemVideoBinding
 import com.example.surfaceproject.databinding.LayoutVideoListBinding
+import com.example.surfaceproject.pick.storage.VideoQuery
 import com.example.surfaceproject.pick.storage.VideoConfig
 import com.fxf.debugwindowlibaray.ui.UIPage
 
@@ -17,7 +18,7 @@ import com.fxf.debugwindowlibaray.ui.UIPage
  */
 class UiPageVideo : UIPage() {
     private lateinit var binding: LayoutVideoListBinding
-    private lateinit var videoList: List<VideoConfig.VideoItem>
+    private lateinit var videoList: List<Pair<String, Int>>
     override fun onCreateContentView(ctx: Context, parent: ViewGroup): View {
         binding = LayoutVideoListBinding.inflate(LayoutInflater.from(ctx), parent, false)
         binding.rvList.adapter = object : RecyclerView.Adapter<VH>() {
@@ -26,7 +27,7 @@ class UiPageVideo : UIPage() {
             }
 
             override fun onBindViewHolder(holder: VH, position: Int) {
-                holder.binding.tvTitle.text = position.toString()
+                holder.binding.tvTitle.text = videoList[position].first
             }
 
             override fun getItemCount(): Int {
@@ -41,10 +42,9 @@ class UiPageVideo : UIPage() {
 
     override fun onShow() {
         super.onShow()
-        VideoConfig.videoList = VideoConfig.videoList.apply {
-            add(VideoConfig.VideoItem("sfdsfsd"))
-        }
-        videoList = VideoConfig.videoList
+        val validList = VideoQuery.getValidVideo(VideoConfig.videoList.map { it.name })
+        videoList = validList
+
         binding.rvList.adapter?.notifyDataSetChanged()
     }
 
