@@ -2,17 +2,42 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#5500ff00"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="444444"
+        android:id="@+id/target"
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:background="#ff0"/>
+    <View
+        android:id="@+id/target2"
+        android:layout_width="20px"
+        android:layout_height="199px"
+        android:background="#f00"
+        app:layout_constraintStart_toEndOf="@id/target" />
 
     <SurfaceView
         android:id="@+id/surfaceView"
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
+        android:layout_width="200px"
+        android:layout_height="200px"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-    <TextureView
-        android:id="@+id/textureView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"/>
+
+    <SurfaceView
+        android:id="@+id/surfaceView2"
+        android:layout_width="200px"
+        android:layout_height="200px"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="300px"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textSize="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
