@@ -12,7 +12,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.example.surfaceproject.databinding.LayoutPickPageBinding
 import com.example.surfaceproject.pick.ScreenRecordManager
-import com.example.surfaceproject.record.ScreenCaptureCore
+import com.example.surfaceproject.media.record.ScreenCaptureCore
 import com.fxf.debugwindowlibaray.ui.UIPage
 import com.fxf.debugwindowlibaray.util.enableSelect
 

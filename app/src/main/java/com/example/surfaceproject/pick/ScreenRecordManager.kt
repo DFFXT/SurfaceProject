@@ -6,8 +6,8 @@ import android.view.Surface
 import com.example.surfaceproject.App
 import com.example.surfaceproject.gl.util.screenRealSize
 import com.example.surfaceproject.pick.gl.ScreenRecordGLRender
-import com.example.surfaceproject.record.ScreenCaptureCore
-import com.example.surfaceproject.record.SurfaceToMedia
+import com.example.surfaceproject.media.record.ScreenCaptureCore
+import com.example.surfaceproject.media.record.SurfaceToMedia
 
 /**
  * 录屏部分区域转mp4

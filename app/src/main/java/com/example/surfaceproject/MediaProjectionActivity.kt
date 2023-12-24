@@ -9,10 +9,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.surfaceproject.gl.util.screenRealSize
-import com.example.surfaceproject.record.SurfaceToMedia
+import com.example.surfaceproject.media.record.SurfaceToMedia
 import com.example.surfaceproject.pick.page.UiPagePick
 import com.example.surfaceproject.pick.gl.ScreenRecordGLRender
-import com.example.surfaceproject.record.ScreenCaptureInitialize
+import com.example.surfaceproject.media.record.ScreenCaptureInitialize
 import com.fxf.debugwindowlibaray.ViewDebugManager
 
 class MediaProjectionActivity : AppCompatActivity() {

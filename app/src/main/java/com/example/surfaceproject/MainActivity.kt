@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.surfaceproject.permission.IOPermission
 import com.example.surfaceproject.pick.page.UiPagePick
-import com.example.surfaceproject.record.ScreenCaptureInitialize
+import com.example.surfaceproject.media.record.ScreenCaptureInitialize
 import com.fxf.debugwindowlibaray.ViewDebugManager
 
 class MainActivity : AppCompatActivity() {

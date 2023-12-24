@@ -1,4 +1,4 @@
-package com.example.surfaceproject.record
+package com.example.surfaceproject.media.record
 
 import android.content.Context
 import android.media.MediaRecorder
