@@ -31,6 +31,12 @@ abstract class Texture : IDraw {
             return tid[0]
         }
 
+        fun create2dTextureId():Int {
+            val tid = IntArray(1)
+            GLES20.glGenTextures(1, tid, 0)
+            return tid[0]
+        }
+
         fun delete(id: Int) {
             GLES20.glDeleteTextures(1, intArrayOf(id), 0)
         }

@@ -54,7 +54,10 @@ class MediaProjectionActivity : AppCompatActivity() {
             }
         })
         loopRun.run()
-        ViewDebugManager.addPage(pickPage)
+        capture.init {
+            pickPage = UiPagePick(capture.getCore())
+            ViewDebugManager.addPage(pickPage)
+        }
        /* pickPage.addPickResultListener(object : UiPagePick.PickListener {
 
             val size = screenRealSize()

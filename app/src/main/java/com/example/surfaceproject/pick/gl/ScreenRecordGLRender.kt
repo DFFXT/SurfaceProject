@@ -6,10 +6,12 @@ import android.opengl.GLES20
 import android.os.Handler
 import android.os.Looper
 import android.view.Surface
+import com.example.surfaceproject.gl.A
 import com.example.surfaceproject.gl.OpenGLEnvironment
 import com.example.surfaceproject.gl.glsl.RectLoader
 import com.example.surfaceproject.gl.graph.model.RectModel
 import com.example.surfaceproject.gl.graph.texture.BitmapTexture
+import com.example.surfaceproject.gl.graph.texture.Texture
 import com.example.surfaceproject.gl.util.screenRealSize
 
 class ScreenRecordGLRender {
@@ -55,6 +57,7 @@ class ScreenRecordGLRender {
                     GLES20.glEnable(GLES20.GL_TEXTURE_2D)
                     GLES20.glEnable(GLES11Ext.GL_TEXTURE_EXTERNAL_OES)
                     rect.draw()
+                    A.run()
                 }
             }
             d()
