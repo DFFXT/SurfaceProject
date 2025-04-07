@@ -56,7 +56,7 @@ class ScreenRecordManager {
         val width = size.x
         val height = size.y
 
-        render.create(recorder.surface()!!) {}
+        render.create(recorder.surface()!!, false) {}
         // 设置预览
         previewSurface?.let {
             render.bindSurface(it)

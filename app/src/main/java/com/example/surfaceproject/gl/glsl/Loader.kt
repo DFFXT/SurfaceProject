@@ -28,6 +28,19 @@ open class Loader {
         this.program = program
         return program
     }
+    open fun enableAttributeLocation(): Int {
+        return 0
+    }
+
+    open fun enableAttributeTextureLocation(): Int {
+        return 0
+    }
+
+
+    open fun bindTextureId(id: Int): Int {
+        return 0
+    }
+
 
     private fun read(raw: Int): String {
         App.ctx.resources.openRawResource(raw).use {

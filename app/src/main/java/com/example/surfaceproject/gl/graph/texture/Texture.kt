@@ -2,10 +2,11 @@ package com.example.surfaceproject.gl.graph.texture
 
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
+import com.example.surfaceproject.gl.glsl.Loader
 import com.example.surfaceproject.gl.graph.IDraw
 import com.example.surfaceproject.gl.util.toNativeBuffer
 
-abstract class Texture : IDraw {
+abstract class Texture(val loader: Loader) : IDraw {
     companion object {
 
         // 全部填充的矩形
@@ -31,7 +32,7 @@ abstract class Texture : IDraw {
             return tid[0]
         }
 
-        fun create2dTextureId():Int {
+        fun createTexture2d(): Int {
             val tid = IntArray(1)
             GLES20.glGenTextures(1, tid, 0)
             return tid[0]

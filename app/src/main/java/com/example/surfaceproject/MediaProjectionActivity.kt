@@ -72,7 +72,7 @@ class MediaProjectionActivity : AppCompatActivity() {
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
                 // recorder = SurfaceToMedia(this@MediaProjectionActivity, 200,200)
-                render.create(holder.surface) {
+                render.create(holder.surface, false) {
                     val size = screenRealSize()
                     // capture.startCapture(render.surface, size.x, size.y)
                 }
